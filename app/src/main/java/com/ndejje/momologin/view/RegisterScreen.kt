@@ -30,6 +30,15 @@ fun RegisterScreen(
     var emailInput       by remember { mutableStateOf("") }
     var passwordInput    by remember { mutableStateOf("") }
     var confirmPassInput by remember { mutableStateOf("") }
+    val emailError =
+        if (emailInput.isNotEmpty() && !emailInput.contains("@"))
+            stringResource(R.string.error_invalid_email)
+        else null
+
+    val passwordError =
+        if (passwordInput.isNotEmpty() && passwordInput.length < 8)
+            stringResource(R.string.error_password_short)
+        else null
 
     LaunchedEffect(authState) {
         if (authState is AuthUiState.Success) {
@@ -66,6 +75,9 @@ fun RegisterScreen(
             label = { Text(stringResource(R.string.label_email)) },
             modifier = Modifier.fillMaxWidth(), singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email))
+        if (emailError != null) {
+            Text(emailError, color = MaterialTheme.colorScheme.error)
+        }
         Spacer(Modifier.height(dimensionResource(R.dimen.spacingMedium)))
 
         OutlinedTextField(value = passwordInput,
@@ -74,6 +86,9 @@ fun RegisterScreen(
             modifier = Modifier.fillMaxWidth(), singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password))
+        if (passwordError != null) {
+            Text(passwordError, color = MaterialTheme.colorScheme.error)
+        }
         Spacer(Modifier.height(dimensionResource(R.dimen.spacingMedium)))
 
         OutlinedTextField(value = confirmPassInput,
