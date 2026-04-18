@@ -17,6 +17,8 @@
     <string name="error_passwords_mismatch">Passwords do not match</string>
     <string name="error_username_taken">Username already exists</string>
     <string name="error_fields_empty">All fields are required</string>
+    <string name="error_invalid_email">Invalid email address</string>
+    <string name="error_password_short">Password must be at least 8 characters</string>
     <!-- Home Screen -->
     <string name="label_welcome">Welcome, %s!</string>
     <string name="btn_logout">Logout</string>
