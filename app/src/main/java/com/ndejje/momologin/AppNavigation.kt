@@ -14,7 +14,7 @@ import com.ndejje.momologin.viewmodel.AuthViewModel
 object Routes {
     const val LOGIN    = "login"
     const val REGISTER = "register"
-    const val HOME     = "home/1008034135"
+    const val HOME     = "home/{username}"
 }
 
 @Composable
