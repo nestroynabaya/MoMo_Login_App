@@ -15,6 +15,11 @@ import com.ndejje.momologin.R
 import com.ndejje.momologin.viewmodel.AuthUiState
 import com.ndejje.momologin.viewmodel.AuthViewModel
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 
 @Composable
 fun LoginScreen(
@@ -25,6 +30,7 @@ fun LoginScreen(
     val authState by viewModel.authState.collectAsState()
     var usernameInput by remember { mutableStateOf("") }
     var passwordInput by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(authState) {
         if (authState is AuthUiState.Success) {
@@ -53,9 +59,23 @@ fun LoginScreen(
         OutlinedTextField(value = passwordInput,
             onValueChange = { passwordInput = it },
             label = { Text(stringResource(R.string.label_password)) },
-            modifier = Modifier.fillMaxWidth(), singleLine = true,
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password))
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
+            visualTransformation =
+                if (passwordVisible) VisualTransformation.None
+                else PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            trailingIcon = {
+                IconButton(onClick = {
+                    passwordVisible = !passwordVisible
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.Visibility,
+                        contentDescription = "Toggle Password"
+                    )
+                }
+            }
+        )
         Spacer(Modifier.height(dimensionResource(R.dimen.spacingSmall)))
 
         if (authState is AuthUiState.Error) {
