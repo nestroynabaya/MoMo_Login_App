@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -12,11 +13,16 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import com.ndejje.momologin.R
 import com.ndejje.momologin.viewmodel.AuthUiState
 import com.ndejje.momologin.viewmodel.AuthViewModel
 import androidx.compose.ui.unit.dp
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+
 
 @Composable
 fun RegisterScreen(
@@ -30,6 +36,8 @@ fun RegisterScreen(
     var emailInput       by remember { mutableStateOf("") }
     var passwordInput    by remember { mutableStateOf("") }
     var confirmPassInput by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
+    var confirmPasswordVisible by remember { mutableStateOf(false) }
     val emailError =
         if (emailInput.isNotEmpty() && !emailInput.contains("@"))
             stringResource(R.string.error_invalid_email)
@@ -83,20 +91,40 @@ fun RegisterScreen(
         OutlinedTextField(value = passwordInput,
             onValueChange = { passwordInput = it },
             label = { Text(stringResource(R.string.label_password)) },
-            modifier = Modifier.fillMaxWidth(), singleLine = true,
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password))
-        if (passwordError != null) {
-            Text(passwordError, color = MaterialTheme.colorScheme.error)
-        }
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
+            isError = passwordError != null,
+            visualTransformation = if (passwordVisible) VisualTransformation.None
+            else PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            trailingIcon = { IconButton(onClick = { passwordVisible = !passwordVisible })
+            { Icon(imageVector = Icons.Default.Visibility, contentDescription = "Toggle Password") }
+            })
+        if (passwordError != null) { Text(text = passwordError, color = MaterialTheme.colorScheme.error,
+            style = MaterialTheme.typography.bodySmall) }
         Spacer(Modifier.height(dimensionResource(R.dimen.spacingMedium)))
 
-        OutlinedTextField(value = confirmPassInput,
+        OutlinedTextField(
+            value = confirmPassInput,
             onValueChange = { confirmPassInput = it },
             label = { Text(stringResource(R.string.label_confirm_password)) },
-            modifier = Modifier.fillMaxWidth(), singleLine = true,
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password))
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
+            visualTransformation =
+                if (confirmPasswordVisible) VisualTransformation.None
+                else PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            trailingIcon = {
+                IconButton(onClick = {
+                    confirmPasswordVisible = !confirmPasswordVisible
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.Visibility,
+                        contentDescription = "Toggle Password"
+                    )
+                }
+            }
+        )
         Spacer(Modifier.height(dimensionResource(R.dimen.spacingSmall)))
 
         if (authState is AuthUiState.Error) {
